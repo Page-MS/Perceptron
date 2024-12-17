@@ -63,15 +63,19 @@
          (inputsT (cadr num))
          (c (sortie_attendue number))
          (o (sortie_calculee somme))
-         (weightsT_1 (list (+ number 1))))
+         (weightsT_1 ()))
     
     (if (not (eq c o))
         (progn
           (loop for weight in weightsT
               for input in inputsT
-              do (nconc weightsT_1 (list (list (car weight) ( +(* (- c o) (cadr input)) (cadr weight)))))
-                )
-          ;(print weightsT_1)
+              do (setq weightsT_1 
+                       (append weightsT_1 (list (list (car weight) ( +(* (- c o) (cadr input)) (cadr weight)))))
+                     ))
+          
+          (setq weightsT_1 (list weightsT_1))
+          (push (+ number 1) weightsT_1)
+          (print weightsT_1)
           (nconc neurone (list weightsT_1))
           ;(print neurone)
           )
@@ -79,5 +83,6 @@
     )
   )
 
-(correction_erreur neurone numeros 0)
+(correction_erreur neurone numeros 2)
+
 neurone
