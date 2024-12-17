@@ -1,7 +1,5 @@
 ;création du neurone
-(setf neurone (list (list '0 '((w0 1) (w1 1) (w2 1) 
-                                (w3 1) (w4 1) (w5 1) 
-                                (w6 1) (w7 1)))))
+(setq *neurone* '(0 ((w0 1) (w1 1) (w2 1) (w3 1) (w4 1) (w5 1) (w6 1) (w7 1))))
 
 ;initialisation des valeurs de x
 (setf numeros 
@@ -20,7 +18,7 @@
 
 (defun processNeurone (neurone list_of_values number)
   (let* ((num (assoc number list_of_values)); Pour recuper les bons inputs
-         (weights (cadr (assoc number neurone))); Pour recuperer une alist
+         (weights (cadr neurone)); Pour recuperer une alist
          (inputs (cadr num))
          (result 0)); initialisation a 0
     
@@ -37,7 +35,7 @@
     )
   )
 
-(processNeurone neurone numeros 0)
+(processNeurone *neurone* numeros 0)
 
 (defun sortie_attendue (number)
   (if (eq (rem number 2) 1)
@@ -56,33 +54,47 @@
 
 (sortie_calculee 7)
 
-(defun correction_erreur (neurone list_of_values number)
+(defun mAj_neurone (new_weights)
+  (setf *neurone* (list (+ (car *neurone*) 1) new_weights))
+  )
+
+(defun correction_erreur (list_of_values number)
   (let* ((num (assoc number list_of_values))
-         (somme (processNeurone neurone list_of_values number))
-         (weightsT (cadr (assoc number neurone)))
+         (somme (processNeurone *neurone* list_of_values number))
+         (weightsT (cdr *neurone*))
          (inputsT (cadr num))
          (c (sortie_attendue number))
          (o (sortie_calculee somme))
          (weightsT_1 ()))
     
+    
     (if (not (eq c o))
         (progn
-          (loop for weight in weightsT
+          (loop for weight in (car weightsT)
               for input in inputsT
               do (setq weightsT_1 
                        (append weightsT_1 (list (list (car weight) ( +(* (- c o) (cadr input)) (cadr weight)))))
                      ))
           
-          (setq weightsT_1 (list weightsT_1))
-          (push (+ number 1) weightsT_1)
-          (print weightsT_1)
-          (nconc neurone (list weightsT_1))
-          ;(print neurone)
+          ;(print weightsT_1)
+          (mAj_neurone weightsT_1)
           )
+          T
       )
     )
   )
 
-(correction_erreur neurone numeros 2)
+(correction_erreur numeros 0)
+
+(defun validation_neuron (neurone list_of_values number)
+  (setq ok T)-
+  (loop for i from 1 to 9 do
+        (setq verif_neurone (neurone list_of_values i))
+        (if (eq verif_neurone NIL)
+            (return NIL)
+          )
+        )
+  (return T)
+)
 
 neurone
