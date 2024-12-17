@@ -59,24 +59,25 @@
 (defun correction_erreur (neurone list_of_values number)
   (let* ((num (assoc number list_of_values))
          (somme (processNeurone neurone list_of_values number))
-         (weightsT (cadr neurone))
+         (weightsT (cadr (assoc number neurone)))
          (inputsT (cadr num))
          (c (sortie_attendue number))
          (o (sortie_calculee somme))
-         (weightsT_1 ()))
+         (weightsT_1 (list (+ number 1))))
     
     (if (not (eq c o))
         (progn
           (loop for weight in weightsT
               for input in inputsT
-              do (cons (+ (* (- c o) input) weight) weightsT_1)
+              do (nconc weightsT_1 (list (list (car weight) ( +(* (- c o) (cadr input)) (cadr weight)))))
                 )
-          (cons (list (+ number 1) weightsT_1) neurone)
+          ;(print weightsT_1)
+          (nconc neurone (list weightsT_1))
+          ;(print neurone)
           )
       )
     )
   )
 
 (correction_erreur neurone numeros 0)
-
 neurone
