@@ -1,4 +1,4 @@
-;création du neurone
+;creation du neurone
 (setq *neurone* '((t 0) (poids ((w0 1) (w1 1) (w2 1) (w3 1) (w4 1) (w5 1) (w6 1) (w7 1))) (sortie 0)))
 
 ;initialisation des valeurs de x
@@ -37,6 +37,7 @@
 
 (processNeurone *neurone* numeros 0)
 
+;calcul de la sortie attendue
 (defun sortie_attendue (number)
   (if (eq (rem number 2) 1)
       1
@@ -45,7 +46,7 @@
 
 (sortie_attendue 0)
 
-
+;calcule la sortie reelle du neurone
 (defun sortie_calculee (somme)
   (if (> somme 0)
       1
@@ -54,6 +55,7 @@
 
 (sortie_calculee 7)
 
+;fonction de correction d'erreur
 (defun correction_erreur (neurone list_of_values number)
   (let* ((num (assoc number list_of_values))
          (somme (processNeurone neurone list_of_values number))
@@ -70,8 +72,10 @@
     (list (list 't (+ (cadr (assoc 't neurone)) 1)) (list 'poids weightsT_1) (list 'sortie (sortie_attendue (+ (cadr(assoc 't neurone)) 1))))
          
       )
-    )
+  )
 
+
+;fonction principale d apprentissage par correction d erreur
 (defun apprentissage_avec_correction_erreur (echantillon)
   (let ((size_e (- (length echantillon) 1))
          (ok NIL)
